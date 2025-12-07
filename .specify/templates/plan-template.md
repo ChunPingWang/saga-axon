@@ -31,7 +31,16 @@
 
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
-[Gates determined based on constitution file]
+| Principle | Gate | Status |
+|-----------|------|--------|
+| I. Code Quality | Cyclomatic complexity <10 per function; public APIs have type definitions | |
+| II. Testing Standards | 80% coverage planned; contract/integration tests defined | |
+| III. BDD | All user stories have Given-When-Then scenarios | |
+| IV. DDD | Ubiquitous language defined; bounded contexts identified | |
+| V. SOLID | Dependency injection planned; interfaces defined for abstractions | |
+| VI. Infrastructure Isolation | Framework code confined to infrastructure layer only | |
+| VII. UX Consistency | Design system patterns followed; accessibility considered | |
+| VIII. Performance | Response time <200ms p95; query time <100ms targets defined | |
 
 ## Project Structure
 

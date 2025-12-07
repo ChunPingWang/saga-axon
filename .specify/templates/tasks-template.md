@@ -8,7 +8,13 @@ description: "Task list template for feature implementation"
 **Input**: Design documents from `/specs/[###-feature-name]/`
 **Prerequisites**: plan.md (required), spec.md (required for user stories), research.md, data-model.md, contracts/
 
-**Tests**: The examples below include test tasks. Tests are OPTIONAL - only include them if explicitly requested in the feature specification.
+**Constitution Compliance**:
+- II. Testing Standards: 80% coverage required; tests written BEFORE implementation
+- III. BDD: Acceptance tests MUST map to Given-When-Then scenarios from spec.md
+- IV. DDD: Domain layer MUST have no framework dependencies
+- VI. Infrastructure Isolation: Framework code confined to infrastructure layer
+
+**Tests**: Per constitution, tests are REQUIRED for all business logic (80% coverage minimum).
 
 **Organization**: Tasks are grouped by user story to enable independent implementation and testing of each story.
 

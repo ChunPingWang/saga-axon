@@ -100,6 +100,30 @@
 - **[Entity 1]**: [What it represents, key attributes without implementation]
 - **[Entity 2]**: [What it represents, relationships to other entities]
 
+### Domain Model *(DDD alignment)*
+
+**Bounded Context**: [Name of the bounded context this feature belongs to]
+
+**Ubiquitous Language**:
+- [Term 1]: [Definition in business language]
+- [Term 2]: [Definition in business language]
+
+**Aggregates**: [List aggregate roots and their invariants]
+
+**Domain Events**: [Events this feature emits or consumes]
+
+### UX Requirements *(mandatory)*
+
+- **UX-001**: [User experience requirement, e.g., "Loading indicators for operations >500ms"]
+- **UX-002**: [Accessibility requirement, e.g., "All interactive elements keyboard navigable"]
+- **UX-003**: [Consistency requirement, e.g., "Error messages follow design system patterns"]
+
+### Performance Requirements *(mandatory)*
+
+- **PERF-001**: [Response time target, e.g., "API response <200ms p95"]
+- **PERF-002**: [Throughput target, e.g., "Support 100 concurrent users"]
+- **PERF-003**: [Resource constraint, e.g., "Memory usage <50MB per request"]
+
 ## Success Criteria *(mandatory)*
 
 <!--

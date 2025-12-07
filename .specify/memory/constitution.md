@@ -1,50 +1,169 @@
-# [PROJECT_NAME] Constitution
-<!-- Example: Spec Constitution, TaskFlow Constitution, etc. -->
+<!--
+================================================================================
+SYNC IMPACT REPORT
+================================================================================
+Version change: 0.0.0 → 1.0.0 (MAJOR - initial constitution establishment)
+
+Modified principles: N/A (new constitution)
+
+Added sections:
+- 8 Core Principles (Code Quality, Testing Standards, BDD, DDD, SOLID,
+  Infrastructure Layer Isolation, UX Consistency, Performance)
+- Architecture Constraints
+- Development Workflow
+- Governance
+
+Removed sections: N/A (new constitution)
+
+Templates requiring updates:
+- .specify/templates/plan-template.md: ✅ updated (Constitution Check table added)
+- .specify/templates/spec-template.md: ✅ updated (DDD, UX, Performance sections added)
+- .specify/templates/tasks-template.md: ✅ updated (Constitution Compliance note added)
+
+Follow-up TODOs: None
+================================================================================
+-->
+
+# Saga-Axon Constitution
 
 ## Core Principles
 
-### [PRINCIPLE_1_NAME]
-<!-- Example: I. Library-First -->
-[PRINCIPLE_1_DESCRIPTION]
-<!-- Example: Every feature starts as a standalone library; Libraries must be self-contained, independently testable, documented; Clear purpose required - no organizational-only libraries -->
+### I. Code Quality
 
-### [PRINCIPLE_2_NAME]
-<!-- Example: II. CLI Interface -->
-[PRINCIPLE_2_DESCRIPTION]
-<!-- Example: Every library exposes functionality via CLI; Text in/out protocol: stdin/args → stdout, errors → stderr; Support JSON + human-readable formats -->
+All code MUST adhere to strict quality standards ensuring maintainability, readability, and correctness.
 
-### [PRINCIPLE_3_NAME]
-<!-- Example: III. Test-First (NON-NEGOTIABLE) -->
-[PRINCIPLE_3_DESCRIPTION]
-<!-- Example: TDD mandatory: Tests written → User approved → Tests fail → Then implement; Red-Green-Refactor cycle strictly enforced -->
+- Code MUST be self-documenting through clear naming conventions and logical structure
+- Functions and methods MUST have single, well-defined responsibilities
+- Cyclomatic complexity MUST remain below 10 per function; exceptions require documented justification
+- All public APIs MUST include type definitions and contracts
+- Code duplication MUST be eliminated through appropriate abstraction when the same logic appears 3+ times
+- Magic numbers and strings MUST be extracted to named constants
+- All warnings MUST be resolved or explicitly suppressed with documented rationale
 
-### [PRINCIPLE_4_NAME]
-<!-- Example: IV. Integration Testing -->
-[PRINCIPLE_4_DESCRIPTION]
-<!-- Example: Focus areas requiring integration tests: New library contract tests, Contract changes, Inter-service communication, Shared schemas -->
+### II. Testing Standards
 
-### [PRINCIPLE_5_NAME]
-<!-- Example: V. Observability, VI. Versioning & Breaking Changes, VII. Simplicity -->
-[PRINCIPLE_5_DESCRIPTION]
-<!-- Example: Text I/O ensures debuggability; Structured logging required; Or: MAJOR.MINOR.BUILD format; Or: Start simple, YAGNI principles -->
+Testing is NON-NEGOTIABLE. All production code MUST have corresponding test coverage.
 
-## [SECTION_2_NAME]
-<!-- Example: Additional Constraints, Security Requirements, Performance Standards, etc. -->
+- Unit test coverage MUST achieve minimum 80% line coverage for business logic
+- Integration tests MUST verify all inter-component and external system interactions
+- Contract tests MUST validate all API boundaries and service interfaces
+- Tests MUST be deterministic: no flaky tests permitted in CI pipeline
+- Test data MUST be isolated; tests MUST NOT depend on shared mutable state
+- Performance-critical paths MUST include benchmark tests with defined thresholds
+- All tests MUST pass before code can be merged to main branch
 
-[SECTION_2_CONTENT]
-<!-- Example: Technology stack requirements, compliance standards, deployment policies, etc. -->
+### III. Behavior Driven Development (BDD)
 
-## [SECTION_3_NAME]
-<!-- Example: Development Workflow, Review Process, Quality Gates, etc. -->
+Features MUST be specified and validated through behavior-driven scenarios.
 
-[SECTION_3_CONTENT]
-<!-- Example: Code review requirements, testing gates, deployment approval process, etc. -->
+- All user stories MUST include Given-When-Then acceptance scenarios
+- Scenarios MUST be written in domain language understandable by stakeholders
+- Acceptance tests MUST directly map to specified scenarios
+- Each scenario MUST test a single behavior or outcome
+- Scenarios MUST be executable and included in CI pipeline
+- Edge cases and error conditions MUST have corresponding scenarios
+- Scenarios MUST be written BEFORE implementation begins
+
+### IV. Domain Driven Design (DDD)
+
+The codebase MUST reflect the business domain through strategic and tactical DDD patterns.
+
+- Domain models MUST use Ubiquitous Language consistent with business terminology
+- Bounded Contexts MUST be clearly defined with explicit boundaries
+- Aggregates MUST protect invariants and enforce consistency boundaries
+- Domain events MUST capture state changes for cross-context communication
+- Repositories MUST abstract persistence; domain MUST NOT depend on infrastructure
+- Value Objects MUST be used for concepts with no identity; immutability required
+- Domain services MUST encapsulate operations that don't belong to entities
+
+### V. SOLID Principles
+
+All object-oriented code MUST adhere to SOLID principles.
+
+- **Single Responsibility**: Each class/module MUST have exactly one reason to change
+- **Open/Closed**: Components MUST be open for extension, closed for modification
+- **Liskov Substitution**: Subtypes MUST be substitutable for their base types without altering correctness
+- **Interface Segregation**: Clients MUST NOT be forced to depend on interfaces they don't use
+- **Dependency Inversion**: High-level modules MUST NOT depend on low-level modules; both MUST depend on abstractions
+
+### VI. Infrastructure Layer Isolation
+
+Frameworks and external dependencies MUST be isolated to the infrastructure layer only.
+
+- Domain and application layers MUST NOT import framework-specific code
+- All framework integrations MUST be implemented through adapters in infrastructure layer
+- Database access MUST use repository pattern with interfaces defined in domain layer
+- External service clients MUST be wrapped in anti-corruption layers
+- Configuration MUST be injected; no framework-specific configuration in domain code
+- Switching frameworks MUST NOT require changes to domain or application layers
+- Infrastructure dependencies MUST be injected via dependency injection containers
+
+### VII. User Experience Consistency
+
+All user-facing interfaces MUST provide consistent, predictable experiences.
+
+- UI components MUST follow established design system patterns
+- Error messages MUST be user-friendly, actionable, and consistent in tone
+- Loading states and feedback MUST be provided for all asynchronous operations
+- Navigation patterns MUST be consistent across the application
+- Accessibility standards (WCAG 2.1 AA) MUST be met for all UI components
+- Responsive design MUST ensure usability across supported device sizes
+- User workflows MUST minimize cognitive load and required actions
+
+### VIII. Performance Requirements
+
+All features MUST meet defined performance thresholds.
+
+- API response times MUST be under 200ms for p95 latency (excluding external dependencies)
+- Page load times MUST be under 3 seconds on standard network conditions
+- Database queries MUST complete within 100ms; complex queries MUST be optimized or paginated
+- Memory usage MUST remain within defined limits; memory leaks are blocking defects
+- Batch operations MUST support cancellation and progress reporting
+- Performance regression tests MUST be part of CI pipeline
+- Resource-intensive operations MUST be asynchronous and non-blocking
+
+## Architecture Constraints
+
+- Maximum 4 layers: Presentation, Application, Domain, Infrastructure
+- Domain layer MUST have zero external dependencies (except language standard library)
+- Cross-cutting concerns (logging, caching, transactions) MUST be implemented via aspects/decorators
+- Event-driven communication MUST be used between bounded contexts
+- Synchronous calls between services MUST be avoided; use async messaging patterns
+
+## Development Workflow
+
+- All changes MUST go through pull request review
+- Minimum 1 approval required before merge; 2 approvals for critical paths
+- CI pipeline MUST pass: linting, type checking, all tests, security scan
+- Feature branches MUST be rebased on main before merge
+- Commits MUST be atomic and follow conventional commit format
+- Breaking changes MUST be documented and communicated before release
+- All production deployments MUST be reversible within 15 minutes
 
 ## Governance
-<!-- Example: Constitution supersedes all other practices; Amendments require documentation, approval, migration plan -->
 
-[GOVERNANCE_RULES]
-<!-- Example: All PRs/reviews must verify compliance; Complexity must be justified; Use [GUIDANCE_FILE] for runtime development guidance -->
+This constitution supersedes all other development practices. All team members MUST:
 
-**Version**: [CONSTITUTION_VERSION] | **Ratified**: [RATIFICATION_DATE] | **Last Amended**: [LAST_AMENDED_DATE]
-<!-- Example: Version: 2.1.1 | Ratified: 2025-06-13 | Last Amended: 2025-07-16 -->
+- Verify compliance with these principles in every code review
+- Justify any complexity that appears to violate these principles
+- Propose amendments through documented change requests
+- Use the constitution as the authoritative reference for architectural decisions
+
+### Amendment Procedure
+
+1. Submit amendment proposal with rationale and impact analysis
+2. Review period of minimum 5 business days
+3. Approval requires consensus among technical leads
+4. Version bump follows semantic versioning:
+   - MAJOR: Principle removal or redefinition
+   - MINOR: New principle or material expansion
+   - PATCH: Clarifications and non-semantic refinements
+5. All dependent artifacts MUST be updated upon amendment
+
+### Compliance Review
+
+- Quarterly architecture reviews MUST assess adherence to these principles
+- Non-compliance MUST be tracked as technical debt with remediation timeline
+- Repeated violations require process improvement actions
+
+**Version**: 1.0.0 | **Ratified**: 2025-12-07 | **Last Amended**: 2025-12-07
