@@ -1,9 +1,15 @@
 # Feature Specification: [FEATURE NAME]
 
-**Feature Branch**: `[###-feature-name]`  
-**Created**: [DATE]  
-**Status**: Draft  
+**Feature Branch**: `[###-feature-name]`
+**Created**: [DATE]
+**Status**: Draft
 **Input**: User description: "$ARGUMENTS"
+
+<!--
+  LANGUAGE REQUIREMENT (Constitution IX): This entire specification MUST be written
+  in Traditional Chinese (zh-TW). Only technical identifiers (API names, code snippets)
+  may remain in English.
+-->
 
 ## User Scenarios & Testing *(mandatory)*
 

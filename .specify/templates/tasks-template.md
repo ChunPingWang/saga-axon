@@ -13,6 +13,7 @@ description: "Task list template for feature implementation"
 - III. BDD: Acceptance tests MUST map to Given-When-Then scenarios from spec.md
 - IV. DDD: Domain layer MUST have no framework dependencies
 - VI. Infrastructure Isolation: Framework code confined to infrastructure layer
+- IX. Documentation Language: User-facing docs MUST be in Traditional Chinese (zh-TW)
 
 **Tests**: Per constitution, tests are REQUIRED for all business logic (80% coverage minimum).
 

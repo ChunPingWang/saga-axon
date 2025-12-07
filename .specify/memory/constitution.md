@@ -2,23 +2,19 @@
 ================================================================================
 SYNC IMPACT REPORT
 ================================================================================
-Version change: 0.0.0 → 1.0.0 (MAJOR - initial constitution establishment)
+Version change: 1.0.0 → 1.1.0 (MINOR - new principle added)
 
-Modified principles: N/A (new constitution)
+Modified principles: None
 
 Added sections:
-- 8 Core Principles (Code Quality, Testing Standards, BDD, DDD, SOLID,
-  Infrastructure Layer Isolation, UX Consistency, Performance)
-- Architecture Constraints
-- Development Workflow
-- Governance
+- IX. Documentation Language (Traditional Chinese requirement for specs/plans/docs)
 
-Removed sections: N/A (new constitution)
+Removed sections: None
 
 Templates requiring updates:
-- .specify/templates/plan-template.md: ✅ updated (Constitution Check table added)
-- .specify/templates/spec-template.md: ✅ updated (DDD, UX, Performance sections added)
-- .specify/templates/tasks-template.md: ✅ updated (Constitution Compliance note added)
+- .specify/templates/plan-template.md: ✅ updated (Constitution Check table - IX added)
+- .specify/templates/spec-template.md: ✅ updated (zh-TW language requirement note added)
+- .specify/templates/tasks-template.md: ✅ updated (IX. Documentation Language compliance added)
 
 Follow-up TODOs: None
 ================================================================================
@@ -122,6 +118,18 @@ All features MUST meet defined performance thresholds.
 - Performance regression tests MUST be part of CI pipeline
 - Resource-intensive operations MUST be asynchronous and non-blocking
 
+### IX. Documentation Language
+
+All specifications, plans, and user-facing documentation MUST be written in Traditional Chinese (zh-TW).
+
+- Feature specifications (spec.md) MUST be written in Traditional Chinese
+- Implementation plans (plan.md) MUST be written in Traditional Chinese
+- User-facing documentation (README, guides, help text) MUST be written in Traditional Chinese
+- Code comments and inline documentation MAY be in English for technical clarity
+- API documentation and technical contracts MAY use English for interoperability
+- Commit messages MAY use either language based on team preference
+- This constitution document remains in English as the authoritative governance reference
+
 ## Architecture Constraints
 
 - Maximum 4 layers: Presentation, Application, Domain, Infrastructure
@@ -166,4 +174,4 @@ This constitution supersedes all other development practices. All team members M
 - Non-compliance MUST be tracked as technical debt with remediation timeline
 - Repeated violations require process improvement actions
 
-**Version**: 1.0.0 | **Ratified**: 2025-12-07 | **Last Amended**: 2025-12-07
+**Version**: 1.1.0 | **Ratified**: 2025-12-07 | **Last Amended**: 2025-12-07

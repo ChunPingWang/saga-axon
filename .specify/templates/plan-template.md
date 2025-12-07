@@ -41,6 +41,7 @@
 | VI. Infrastructure Isolation | Framework code confined to infrastructure layer only | |
 | VII. UX Consistency | Design system patterns followed; accessibility considered | |
 | VIII. Performance | Response time <200ms p95; query time <100ms targets defined | |
+| IX. Documentation Language | This plan written in Traditional Chinese (zh-TW) | |
 
 ## Project Structure
 
