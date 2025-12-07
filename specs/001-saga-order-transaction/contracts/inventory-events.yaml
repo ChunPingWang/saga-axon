@@ -1,0 +1,224 @@
+asyncapi: 2.6.0
+info:
+  title: Inventory Service Events
+  version: 1.0.0
+  description: 庫存服務領域事件契約
+
+channels:
+  inventory/reserved:
+    description: 庫存預留成功事件
+    publish:
+      operationId: onInventoryReserved
+      message:
+        $ref: '#/components/messages/InventoryReservedEvent'
+
+  inventory/reservation-failed:
+    description: 庫存預留失敗事件
+    publish:
+      operationId: onInventoryReservationFailed
+      message:
+        $ref: '#/components/messages/InventoryReservationFailedEvent'
+
+  inventory/confirmed:
+    description: 庫存確認成功事件
+    publish:
+      operationId: onInventoryConfirmed
+      message:
+        $ref: '#/components/messages/InventoryConfirmedEvent'
+
+  inventory/released:
+    description: 庫存預留釋放事件
+    publish:
+      operationId: onInventoryReleased
+      message:
+        $ref: '#/components/messages/InventoryReleasedEvent'
+
+components:
+  messages:
+    InventoryReservedEvent:
+      name: InventoryReservedEvent
+      title: 庫存預留成功
+      contentType: application/json
+      payload:
+        type: object
+        required:
+          - orderId
+          - reservationId
+          - productId
+          - quantity
+          - timestamp
+        properties:
+          orderId:
+            type: string
+            format: uuid
+            description: 關聯訂單編號
+          reservationId:
+            type: string
+            format: uuid
+            description: 預留唯一識別碼
+          productId:
+            type: string
+            description: 商品識別碼
+          quantity:
+            type: integer
+            minimum: 1
+            description: 預留數量
+          remainingStock:
+            type: integer
+            description: 預留後剩餘可用庫存
+          timestamp:
+            type: string
+            format: date-time
+            description: 事件發生時間
+
+    InventoryReservationFailedEvent:
+      name: InventoryReservationFailedEvent
+      title: 庫存預留失敗
+      contentType: application/json
+      payload:
+        type: object
+        required:
+          - orderId
+          - productId
+          - reason
+          - timestamp
+        properties:
+          orderId:
+            type: string
+            format: uuid
+            description: 關聯訂單編號
+          productId:
+            type: string
+            description: 商品識別碼
+          requestedQuantity:
+            type: integer
+            description: 請求預留數量
+          availableStock:
+            type: integer
+            description: 可用庫存數量
+          reason:
+            type: string
+            enum:
+              - OUT_OF_STOCK
+              - PRODUCT_NOT_FOUND
+              - SYSTEM_ERROR
+            description: |
+              失敗原因：
+              - OUT_OF_STOCK: 庫存不足
+              - PRODUCT_NOT_FOUND: 商品不存在
+              - SYSTEM_ERROR: 系統錯誤
+          message:
+            type: string
+            description: 人類可讀的錯誤訊息
+          timestamp:
+            type: string
+            format: date-time
+
+    InventoryConfirmedEvent:
+      name: InventoryConfirmedEvent
+      title: 庫存確認成功
+      contentType: application/json
+      payload:
+        type: object
+        required:
+          - orderId
+          - reservationId
+          - timestamp
+        properties:
+          orderId:
+            type: string
+            format: uuid
+          reservationId:
+            type: string
+            format: uuid
+          productId:
+            type: string
+          confirmedQuantity:
+            type: integer
+            description: 確認扣減數量
+          timestamp:
+            type: string
+            format: date-time
+
+    InventoryReleasedEvent:
+      name: InventoryReleasedEvent
+      title: 庫存預留釋放
+      contentType: application/json
+      payload:
+        type: object
+        required:
+          - orderId
+          - reservationId
+          - timestamp
+        properties:
+          orderId:
+            type: string
+            format: uuid
+          reservationId:
+            type: string
+            format: uuid
+          productId:
+            type: string
+          releasedQuantity:
+            type: integer
+            description: 釋放數量
+          reason:
+            type: string
+            enum:
+              - ORDER_CANCELLED
+              - PAYMENT_FAILED
+              - TIMEOUT
+              - COMPENSATION
+            description: 釋放原因
+          timestamp:
+            type: string
+            format: date-time
+
+  schemas:
+    ReserveInventoryCommand:
+      type: object
+      description: 預留庫存命令（由 Saga 發送）
+      required:
+        - orderId
+        - productId
+        - quantity
+      properties:
+        orderId:
+          type: string
+          format: uuid
+        productId:
+          type: string
+        quantity:
+          type: integer
+          minimum: 1
+
+    ConfirmInventoryCommand:
+      type: object
+      description: 確認庫存命令（由 Saga 發送）
+      required:
+        - orderId
+        - reservationId
+      properties:
+        orderId:
+          type: string
+          format: uuid
+        reservationId:
+          type: string
+          format: uuid
+
+    ReleaseInventoryCommand:
+      type: object
+      description: 釋放庫存命令（由 Saga 發送，補償操作）
+      required:
+        - orderId
+        - reservationId
+      properties:
+        orderId:
+          type: string
+          format: uuid
+        reservationId:
+          type: string
+          format: uuid
+        reason:
+          type: string
+          description: 釋放原因

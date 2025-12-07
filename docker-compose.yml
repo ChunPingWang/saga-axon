@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  axon-server:
+    image: axoniq/axonserver:latest
+    container_name: axon-server
+    hostname: axon-server
+    ports:
+      - "8024:8024"   # HTTP dashboard
+      - "8124:8124"   # gRPC
+    environment:
+      - AXONIQ_AXONSERVER_NAME=axon-server
+      - AXONIQ_AXONSERVER_HOSTNAME=axon-server
+      - AXONIQ_AXONSERVER_DEVMODE_ENABLED=true
+    volumes:
+      - axon-data:/axonserver/data
+      - axon-events:/axonserver/events
+      - axon-config:/axonserver/config
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8024/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+volumes:
+  axon-data:
+  axon-events:
+  axon-config:
