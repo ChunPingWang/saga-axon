@@ -1,0 +1,219 @@
+openapi: 3.0.3
+info:
+  title: Sales Service API
+  description: 銷售服務 REST API - 訂單管理
+  version: 1.0.0
+  contact:
+    name: Saga-Axon Team
+
+servers:
+  - url: http://localhost:8080/api/v1
+    description: 本地開發環境
+
+paths:
+  /orders:
+    post:
+      summary: 建立訂單
+      description: |
+        建立新訂單並啟動 Saga 協調流程。
+        此端點為非同步操作，回傳訂單受理確認（非最終結果）。
+      operationId: createOrder
+      tags:
+        - Orders
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateOrderRequest'
+      responses:
+        '202':
+          description: 訂單已受理，正在處理中
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderAcceptedResponse'
+        '400':
+          description: 請求格式錯誤
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /orders/{orderId}:
+    get:
+      summary: 查詢訂單狀態
+      description: 取得指定訂單的目前狀態與詳細資訊
+      operationId: getOrder
+      tags:
+        - Orders
+      parameters:
+        - name: orderId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: 訂單唯一識別碼
+      responses:
+        '200':
+          description: 訂單詳細資訊
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderResponse'
+        '404':
+          description: 訂單不存在
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /orders/{orderId}/history:
+    get:
+      summary: 查詢訂單歷史
+      description: 取得指定訂單的所有狀態變更紀錄
+      operationId: getOrderHistory
+      tags:
+        - Orders
+      parameters:
+        - name: orderId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: 訂單歷史紀錄
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderHistoryResponse'
+        '404':
+          description: 訂單不存在
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  schemas:
+    CreateOrderRequest:
+      type: object
+      required:
+        - customerId
+        - productId
+      properties:
+        customerId:
+          type: string
+          description: 顧客識別碼
+          example: "CUST-001"
+        productId:
+          type: string
+          description: 商品識別碼（MVP 固定為 IPHONE17）
+          example: "IPHONE17"
+        quantity:
+          type: integer
+          description: 數量（MVP 固定為 1）
+          default: 1
+          minimum: 1
+
+    OrderAcceptedResponse:
+      type: object
+      properties:
+        orderId:
+          type: string
+          format: uuid
+          description: 訂單唯一識別碼
+        status:
+          type: string
+          enum: [PENDING]
+          description: 訂單狀態
+        message:
+          type: string
+          example: "訂單已受理，正在處理中"
+        createdAt:
+          type: string
+          format: date-time
+
+    OrderResponse:
+      type: object
+      properties:
+        orderId:
+          type: string
+          format: uuid
+        customerId:
+          type: string
+        productId:
+          type: string
+        quantity:
+          type: integer
+        amount:
+          type: number
+          format: decimal
+          description: 訂單金額
+        status:
+          $ref: '#/components/schemas/OrderStatus'
+        statusMessage:
+          type: string
+          description: 狀態說明（失敗時包含原因）
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    OrderStatus:
+      type: string
+      enum:
+        - PENDING
+        - PROCESSING
+        - CONFIRMED
+        - CANCELLED
+        - CANCELLED_TIMEOUT
+      description: |
+        - PENDING: 待處理
+        - PROCESSING: 處理中
+        - CONFIRMED: 已確認
+        - CANCELLED: 已取消
+        - CANCELLED_TIMEOUT: 已取消（超時）
+
+    OrderHistoryResponse:
+      type: object
+      properties:
+        orderId:
+          type: string
+          format: uuid
+        events:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrderEvent'
+
+    OrderEvent:
+      type: object
+      properties:
+        eventType:
+          type: string
+          description: 事件類型
+        timestamp:
+          type: string
+          format: date-time
+        details:
+          type: object
+          additionalProperties: true
+          description: 事件詳細資訊
+
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          description: 錯誤代碼
+        message:
+          type: string
+          description: 錯誤訊息
+        timestamp:
+          type: string
+          format: date-time

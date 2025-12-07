@@ -1,0 +1,23 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git add:*)",
+      "Bash(git commit -m \"$(cat <<''EOF''\ndocs: 建立專案憲法 v1.0.0（8 項核心原則 + 範本同步）\n\n新增 8 項核心原則：\n- I. 程式碼品質：循環複雜度 <10、型別定義、無魔術數字\n- II. 測試標準：80% 覆蓋率、契約測試、整合測試\n- III. 行為驅動開發（BDD）：Given-When-Then 場景\n- IV. 領域驅動設計（DDD）：通用語言、限界上下文、聚合\n- V. SOLID 原則：單一職責、開放封閉、里氏替換、介面隔離、依賴反轉\n- VI. 基礎設施層隔離：框架僅限於基礎設施層\n- VII. 使用者體驗一致性：設計系統、WCAG 2.1 AA\n- VIII. 效能要求：API <200ms p95、查詢 <100ms\n\n範本更新：\n- plan-template.md：新增憲法檢查表\n- spec-template.md：新增 DDD、UX、效能區段\n- tasks-template.md：新增憲法合規提示\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")",
+      "Bash(git commit -m \"$(cat <<''EOF''\ndocs: 修訂憲法至 v1.1.0（新增文件語言原則）\n\n新增原則 IX. 文件語言：\n- 功能規格（spec.md）必須使用繁體中文撰寫\n- 實作計畫（plan.md）必須使用繁體中文撰寫\n- 使用者文件（README、指南、說明）必須使用繁體中文\n- 程式碼註解與 API 文件可使用英文\n- 憲法文件維持英文作為治理權威參考\n\n範本同步更新：\n- plan-template.md：憲法檢查表新增第 IX 項\n- spec-template.md：新增繁體中文語言要求註解\n- tasks-template.md：合規清單新增第 IX 項\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")",
+      "Bash(git fetch:*)",
+      "Bash(.specify/scripts/bash/create-new-feature.sh:*)",
+      "Bash(.specify/scripts/bash/check-prerequisites.sh:*)",
+      "Bash(.specify/scripts/bash/setup-plan.sh:*)",
+      "Bash(.specify/scripts/bash/update-agent-context.sh:*)",
+      "Bash(git rev-parse:*)",
+      "Bash(gradle wrapper:*)",
+      "Bash(./gradlew build:*)",
+      "Bash(./gradlew compileJava:*)",
+      "Bash(./gradlew:*)",
+      "Bash(find:*)",
+      "Bash(git commit:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

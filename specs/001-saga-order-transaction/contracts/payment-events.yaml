@@ -1,0 +1,227 @@
+asyncapi: 2.6.0
+info:
+  title: Payment Service Events
+  version: 1.0.0
+  description: 支付服務領域事件契約
+
+channels:
+  payment/reserved:
+    description: 支付預留成功事件
+    publish:
+      operationId: onPaymentReserved
+      message:
+        $ref: '#/components/messages/PaymentReservedEvent'
+
+  payment/reservation-failed:
+    description: 支付預留失敗事件
+    publish:
+      operationId: onPaymentReservationFailed
+      message:
+        $ref: '#/components/messages/PaymentReservationFailedEvent'
+
+  payment/confirmed:
+    description: 支付確認成功事件
+    publish:
+      operationId: onPaymentConfirmed
+      message:
+        $ref: '#/components/messages/PaymentConfirmedEvent'
+
+  payment/released:
+    description: 支付預留釋放事件
+    publish:
+      operationId: onPaymentReleased
+      message:
+        $ref: '#/components/messages/PaymentReleasedEvent'
+
+components:
+  messages:
+    PaymentReservedEvent:
+      name: PaymentReservedEvent
+      title: 支付預留成功
+      contentType: application/json
+      payload:
+        type: object
+        required:
+          - orderId
+          - reservationId
+          - customerId
+          - amount
+          - timestamp
+        properties:
+          orderId:
+            type: string
+            format: uuid
+            description: 關聯訂單編號
+          reservationId:
+            type: string
+            format: uuid
+            description: 預留唯一識別碼
+          customerId:
+            type: string
+            description: 顧客識別碼
+          amount:
+            type: number
+            format: decimal
+            description: 預留金額
+          expiresAt:
+            type: string
+            format: date-time
+            description: 預留過期時間
+          timestamp:
+            type: string
+            format: date-time
+            description: 事件發生時間
+
+    PaymentReservationFailedEvent:
+      name: PaymentReservationFailedEvent
+      title: 支付預留失敗
+      contentType: application/json
+      payload:
+        type: object
+        required:
+          - orderId
+          - customerId
+          - reason
+          - timestamp
+        properties:
+          orderId:
+            type: string
+            format: uuid
+            description: 關聯訂單編號
+          customerId:
+            type: string
+            description: 顧客識別碼
+          requestedAmount:
+            type: number
+            format: decimal
+            description: 請求預留金額
+          availableCredit:
+            type: number
+            format: decimal
+            description: 可用信用額度
+          reason:
+            type: string
+            enum:
+              - INSUFFICIENT_CREDIT
+              - CUSTOMER_NOT_FOUND
+              - SYSTEM_ERROR
+            description: |
+              失敗原因：
+              - INSUFFICIENT_CREDIT: 信用額度不足
+              - CUSTOMER_NOT_FOUND: 顧客不存在
+              - SYSTEM_ERROR: 系統錯誤
+          message:
+            type: string
+            description: 人類可讀的錯誤訊息
+          timestamp:
+            type: string
+            format: date-time
+
+    PaymentConfirmedEvent:
+      name: PaymentConfirmedEvent
+      title: 支付確認成功
+      contentType: application/json
+      payload:
+        type: object
+        required:
+          - orderId
+          - reservationId
+          - timestamp
+        properties:
+          orderId:
+            type: string
+            format: uuid
+          reservationId:
+            type: string
+            format: uuid
+          confirmedAmount:
+            type: number
+            format: decimal
+            description: 確認扣款金額
+          timestamp:
+            type: string
+            format: date-time
+
+    PaymentReleasedEvent:
+      name: PaymentReleasedEvent
+      title: 支付預留釋放
+      contentType: application/json
+      payload:
+        type: object
+        required:
+          - orderId
+          - reservationId
+          - timestamp
+        properties:
+          orderId:
+            type: string
+            format: uuid
+          reservationId:
+            type: string
+            format: uuid
+          releasedAmount:
+            type: number
+            format: decimal
+            description: 釋放金額
+          reason:
+            type: string
+            enum:
+              - ORDER_CANCELLED
+              - INVENTORY_FAILED
+              - TIMEOUT
+              - COMPENSATION
+            description: 釋放原因
+          timestamp:
+            type: string
+            format: date-time
+
+  schemas:
+    ReservePaymentCommand:
+      type: object
+      description: 預留支付命令（由 Saga 發送）
+      required:
+        - orderId
+        - customerId
+        - amount
+      properties:
+        orderId:
+          type: string
+          format: uuid
+        customerId:
+          type: string
+        amount:
+          type: number
+          format: decimal
+          minimum: 0
+          exclusiveMinimum: true
+
+    ConfirmPaymentCommand:
+      type: object
+      description: 確認支付命令（由 Saga 發送）
+      required:
+        - orderId
+        - reservationId
+      properties:
+        orderId:
+          type: string
+          format: uuid
+        reservationId:
+          type: string
+          format: uuid
+
+    ReleasePaymentCommand:
+      type: object
+      description: 釋放支付命令（由 Saga 發送，補償操作）
+      required:
+        - orderId
+        - reservationId
+      properties:
+        orderId:
+          type: string
+          format: uuid
+        reservationId:
+          type: string
+          format: uuid
+        reason:
+          type: string
+          description: 釋放原因
